@@ -1,45 +1,420 @@
 <% layout('/layouts/boilerplate') %>
-<div class="row mt-3">
-    <h1 class="col-6 offset-3">SignUp on WanderLust</h1>
-    <div class="col-6 offset-3">
+
+<style>
+.auth-container {
+    display: flex;
+    min-height: 80vh;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    background-color: #f8f9fa;
+}
+
+.auth-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    max-width: 500px;
+    padding: 2.5rem;
+    margin: 0 auto;
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.auth-header h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 0.5rem;
+}
+
+.auth-header p {
+    color: #666;
+    margin-bottom: 0;
+}
+
+.form-label {
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    transition: all 0.2s;
+    background-color: #f9f9f9;
+}
+
+.form-control:focus {
+    border-color: #222;
+    box-shadow: 0 0 0 3px rgba(34, 34, 34, 0.1);
+    background-color: white;
+}
+
+.btn-signup {
+    width: 100%;
+    padding: 0.875rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: white;
+    background-color: #ff385c;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 0.5rem;
+}
+
+.btn-signup:hover {
+    background-color: #e61e4d;
+    transform: translateY(-1px);
+}
+
+.auth-footer a,
+.toggle-password,
+.input-group-text,
+.form-check-input:checked {
+    color: #ff385c;
+}
+
+.auth-footer a:hover {
+    color: #e61e4d;
+}
+
+.form-control:focus {
+    border-color: #ff385c;
+    box-shadow: 0 0 0 3px rgba(255, 56, 92, 0.1);
+}
+
+.form-check-input:checked {
+    background-color: #ff385c;
+    border-color: #ff385c;
+}
+
+.strength-meter {
+    background: #ff385c;
+}
+
+.hint-valid {
+    color: #ff385c;
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: #666;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+}
+
+.auth-footer a {
+    color: #222;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.auth-footer a:hover {
+    color: #000;
+    text-decoration: underline;
+}
+
+.invalid-feedback {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: none;
+}
+
+.was-validated .form-control:invalid ~ .invalid-feedback,
+.was-validated .form-control:invalid ~ .invalid-tooltip {
+    display: block;
+}
+
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.password-container {
+    position: relative;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0.25rem;
+}
+
+.toggle-password:hover {
+    color: #222;
+}
+
+.password-strength {
+    height: 4px;
+    background: #e9ecef;
+    border-radius: 2px;
+    margin-top: 0.5rem;
+    overflow: hidden;
+}
+
+.strength-meter {
+    height: 100%;
+    width: 0;
+    background: #dc3545;
+    transition: width 0.3s, background 0.3s;
+}
+
+.password-hints {
+    font-size: 0.8rem;
+    color: #6c757d;
+    margin-top: 0.5rem;
+}
+
+.password-hint {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.25rem;
+}
+
+.password-hint i {
+    margin-right: 0.5rem;
+    font-size: 0.6rem;
+}
+
+.hint-valid {
+    color: #28a745;
+}
+
+.hint-invalid {
+    color: #6c757d;
+}
+
+@media (max-width: 576px) {
+    .auth-card {
+        padding: 2rem 1.5rem;
+    }
+    
+    .auth-header h1 {
+        font-size: 1.5rem;
+    }
+}
+</style>
+
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h1>Create your account</h1>
+            <p>Join WanderLust to discover amazing places to stay</p>
+        </div>
+        <% if (error && error.length) { %>
+            <div class="alert alert-danger" role="alert">
+                <%= error %>
+            </div>
+        <% } %>
+        
         <form action="/signup" method="POST" class="needs-validation" novalidate>
-            <div class="mb-3">
-            <label for="username" class="form-label">Username</label>
-            <input 
-                name="username"
-                id="username"
-                type="text" 
-                class="form-control" 
-                required
-            />
-            <div class="valid-feedback">Looks Good!</div>
-            <div class="invalid-feedback">Username must be valid</div>
+            <div class="form-group">
+                <label for="username" class="form-label">Username</label>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fas fa-user"></i>
+                    </span>
+                    <input 
+                        name="username"
+                        id="username"
+                        type="text" 
+                        class="form-control" 
+                        placeholder="Choose a username"
+                        pattern="^[a-zA-Z0-9_]{4,20}$"
+                        required
+                        autofocus
+                    />
+                </div>
+                <div class="invalid-feedback">
+                    Username must be 4-20 characters (letters, numbers, _)
+                </div>
             </div>
 
-            <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
-            <input 
-                name="email"
-                id="email"
-                type="email" 
-                class="form-control" 
-                required
-            />
-            <div class="invalid-feedback">Email must be valid</div>
+            <div class="form-group">
+                <label for="email" class="form-label">Email address</label>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fas fa-envelope"></i>
+                    </span>
+                    <input 
+                        name="email"
+                        id="email"
+                        type="email" 
+                        class="form-control" 
+                        placeholder="your@email.com"
+                        required
+                    />
+                </div>
+                <div class="invalid-feedback">
+                    Please enter a valid email address
+                </div>
             </div>
 
-            <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
-            <input 
-                name="password"
-                id="password"
-                type="password" 
-                class="form-control" 
-                required
-            />
-            <div class="invalid-feedback">Password must be valid</div>
+            <div class="form-group">
+                <label for="password" class="form-label">Password</label>
+                <div class="password-container">
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fas fa-lock"></i>
+                        </span>
+                        <input 
+                            name="password"
+                            id="password"
+                            type="password" 
+                            class="form-control" 
+                            placeholder="Create a password"
+                            minlength="8"
+                            required
+                            oninput="checkPasswordStrength(this.value)"
+                        />
+                        <button type="button" class="toggle-password" onclick="togglePassword()">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="password-strength">
+                        <div id="strength-meter" class="strength-meter"></div>
+                    </div>
+                    <div class="password-hints">
+                        <div id="length-hint" class="password-hint">
+                            <i class="fas fa-circle"></i>
+                            <span>At least 8 characters</span>
+                        </div>
+                        <div id="number-hint" class="password-hint">
+                            <i class="fas fa-circle"></i>
+                            <span>At least 1 number</span>
+                        </div>
+                        <div id="special-hint" class="password-hint">
+                            <i class="fas fa-circle"></i>
+                            <span>At least 1 special character</span>
+                        </div>
+                    </div>
+                    <div class="invalid-feedback">
+                        Password must be at least 8 characters long
+                    </div>
+                </div>
             </div>
-            <button class="btn btn-success">SignUp</button>
+            
+            <div class="form-group form-check mt-4 mb-4">
+                <input type="checkbox" class="form-check-input" id="terms" required>
+                <label class="form-check-label" for="terms">
+                    I agree to the <a href="/terms" target="_blank">Terms of Service</a> and 
+                    <a href="/privacy" target="_blank">Privacy Policy</a>
+                </label>
+                <div class="invalid-feedback">
+                    You must agree to the terms and conditions
+                </div>
+            </div>
+            
+            <button type="submit" class="btn-signup">
+                Create Account
+            </button>
+            <div class="auth-footer">
+                <p>Already have an account? <a href="/login">Sign in</a></p>
+            </div>
         </form>
     </div>
-</div>    
+</div>
+
+<script>
+// Toggle password visibility
+function togglePassword() {
+    const passwordInput = document.getElementById('password');
+    const toggleIcon = document.querySelector('.toggle-password i');
+    
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleIcon.classList.remove('fa-eye');
+        toggleIcon.classList.add('fa-eye-slash');
+    } else {
+        passwordInput.type = 'password';
+        toggleIcon.classList.remove('fa-eye-slash');
+        toggleIcon.classList.add('fa-eye');
+    }
+}
+
+// Password strength checker
+function checkPasswordStrength(password) {
+    const strengthMeter = document.getElementById('strength-meter');
+    const lengthHint = document.getElementById('length-hint');
+    const numberHint = document.getElementById('number-hint');
+    const specialHint = document.getElementById('special-hint');
+    
+    // Reset all hints
+    [lengthHint, numberHint, specialHint].forEach(hint => {
+        hint.classList.remove('hint-valid');
+        hint.querySelector('i').className = 'fas fa-circle';
+    });
+    
+    let strength = 0;
+    const hasMinLength = password.length >= 8;
+    const hasNumber = /\d/.test(password);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    
+    // Update hints
+    if (hasMinLength) {
+        strength += 33;
+        lengthHint.classList.add('hint-valid');
+        lengthHint.querySelector('i').className = 'fas fa-check-circle';
+    }
+    
+    if (hasNumber) {
+        strength += 33;
+        numberHint.classList.add('hint-valid');
+        numberHint.querySelector('i').className = 'fas fa-check-circle';
+    }
+    
+    if (hasSpecialChar) {
+        strength += 34;
+        specialHint.classList.add('hint-valid');
+        specialHint.querySelector('i').className = 'fas fa-check-circle';
+    }
+    
+    // Update strength meter
+    strengthMeter.style.width = strength + '%';
+    
+    // Update meter color based on strength
+    if (strength < 40) {
+        strengthMeter.style.background = '#dc3545'; // Red
+    } else if (strength < 80) {
+        strengthMeter.style.background = '#ffc107'; // Yellow
+    } else {
+        strengthMeter.style.background = '#28a745'; // Green
+    }
+}
+
+// Form validation
+(function () {
+    'use strict'
+    var forms = document.querySelectorAll('.needs-validation')
+    Array.prototype.slice.call(forms)
+        .forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                form.classList.add('was-validated')
+            }, false)
+        })
+})()
+</script>

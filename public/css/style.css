@@ -1,8 +1,16 @@
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden; /* Prevent horizontal scroll if something accidentally overflows */
+}
+
 body {
     font-family: "Plus Jakarta Sans", sans-serif !important;
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
+    min-height: 100vh; /* Ensures footer stays at bottom for short content */
 }
 
 .container{
@@ -24,55 +32,304 @@ body {
 }
 
 /* Footer */
-.f-info-links a{
-    text-decoration: none;
-    color : #222222;
+.footer {
+    width: 100% !important;
+    max-width: 100vw !important; /* Use viewport width */
+    box-sizing: border-box !important; /* Include padding/border in width */
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 0 !important; /* Reset padding on the main footer element */
+    padding-right: 0 !important; /* Reset padding on the main footer element */
+    background-color: #f8f9fa;
+    color: #6c757d;
+    padding-top: 3rem; /* Top padding for the footer area */
+    padding-bottom: 0; /* Bottom padding will be handled by .footer-bottom or inner content */
+    /* padding-left and padding-right are already 0 !important from previous edit */
+    margin-top: 4rem;
+    border-top: 1px solid #e9ecef;
+    /* width is already 100% !important from previous edit */
+    font-size: 0.95rem;
+    position: relative;
 }
 
-.f-info-links a:hover{
+.footer .container-fluid {
+    background-color: transparent; /* Ensure no overriding background */
+    padding-left: 15px; /* Standard Bootstrap container-fluid-like padding */
+    padding-right: 15px; /* Standard Bootstrap container-fluid-like padding */
+    width: 100%; /* Ensure the container-fluid itself takes full width of its parent */
+    box-sizing: border-box;
+}
+
+.footer-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    gap: 2rem;
+}
+
+.footer-section {
+    flex: 1;
+    min-width: 200px;
+    margin-bottom: 1.5rem;
+}
+
+.footer-section h5 {
+    color: #343a40;
+    font-weight: 600;
+    margin-bottom: 1.25rem;
+    font-size: 1.1rem;
+    position: relative;
+    padding-bottom: 0.5rem;
+}
+
+.footer-section h5::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 40px;
+    height: 2px;
+    background-color: #fe424d;
+}
+
+.footer-section p {
+    margin-bottom: 1.25rem;
+    line-height: 1.6;
+    color: #6c757d;
+}
+
+/* Map Styles */
+#map-container {
+    width: 100%; /* Ensure it takes full width of its parent in show.ejs (the .container) */
+    margin-top: 2rem; /* Add some space above the map section */
+    margin-bottom: 2rem; /* Add some space below the map section */
+}
+
+#map {
+    height: 400px;   
+    width: 100%;     /* Make map take full width of its parent column */
+    max-width: 100%; /* Prevent map from exceeding its parent column's width */
+    border-radius: 8px; 
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1); 
+}
+
+/* Styles for the bottom bar of the footer */
+.footer-bottom {
+    padding: 1.5rem 0;
+    margin-top: 2rem;
+    border-top: 1px solid #dee2e6; /* A slightly lighter border */
+    text-align: center;
+    background-color: transparent !important; /* Crucial for consistent background with .footer */
+    box-sizing: border-box;
+}
+
+.footer-bottom .footer-legal {
+    display: inline-block; /* Allows text-align:center on parent to center this block */
+}
+
+.footer-bottom .copyright,
+.footer-bottom .footer-legal span,
+.footer-bottom .footer-legal a {
+    color: #6c757d; /* Match main footer text color */
+    font-size: 0.9rem;
+}
+
+.footer-bottom .footer-legal a:hover {
+    color: #e63946; /* Brand color for hover */
     text-decoration: underline;
 }
 
-.f-info-links, 
-.f-info-socials,
-.f-info-brand{
-    width : 100%;
+.footer-bottom .footer-legal .divider {
+    margin: 0 0.5rem;
+    color: #adb5bd;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-links li {
+    margin-bottom: 0.75rem;
+}
+
+.footer-links a {
+    color: #6c757d;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+}
+
+.footer-links a:hover {
+    color: #fe424d;
+    padding-left: 5px;
+    text-decoration: none;
+}
+
+.social-icons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.social-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: #e9ecef;
+    color: #6c757d;
+    transition: all 0.3s ease;
+}
+
+.social-icon:hover {
+    background-color: #fe424d;
+    color: white;
+    transform: translateY(-3px);
+}
+
+.newsletter-form .form-control {
+    border: 1px solid #dee2e6;
+    border-radius: 4px 0 0 4px;
+    padding: 0.5rem 1rem;
+    height: 44px;
+}
+
+.newsletter-form .btn-primary {
+    background-color: #fe424d;
+    border-color: #fe424d;
+    border-radius: 0 4px 4px 0;
+    height: 44px;
+    padding: 0 1rem;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.f-info-socials i{
-    font-size: 1.2rem;
-    margin-right: 1rem;
-    vertical-align: middle;
+.newsletter-form .btn-primary:hover {
+    background-color: #e63946;
+    border-color: #e63946;
 }
 
-.f-info{
-    text-align: center;
-    height : 8rem;
-    background-color: #ebebeb;
-    display : flex;
+.payment-methods {
+    margin-top: 1.5rem;
+    display: flex;
+    gap: 1rem;
     flex-wrap: wrap;
-    justify-content: center;
-    align-items: space-evenly;
+}
+
+.payment-methods i {
+    font-size: 1.8rem;
+    color: #6c757d;
+    opacity: 0.8;
+    transition: all 0.3s ease;
+}
+
+.payment-methods i:hover {
+    color: #343a40;
+    opacity: 1;
+}
+
+.footer-bottom {
+    background-color: #e9ecef;
+    padding: 1.5rem 0;
+    margin-top: 2rem;
+}
+
+.footer-bottom .container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.copyright {
+    margin: 0.5rem 0;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.footer-legal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    align-items: center;
+}
+
+.footer-legal a {
+    color: #6c757d;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+}
+
+.footer-legal a:hover {
+    color: #fe424d;
+    text-decoration: none;
+}
+
+.divider {
+    color: #adb5bd;
+    font-size: 0.8rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .footer-section {
+        flex: 0 0 calc(50% - 1rem);
+    }
+}
+
+@media (max-width: 576px) {
+    .footer-section {
+        flex: 0 0 100%;
+    }
+    
+    .footer-bottom .container {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .footer-legal {
+        margin-top: 1rem;
+        justify-content: center;
+    }
 }
 
 /* Cards */
-.listing-card{
-    border : none !important;
+.listing-card {
+    border: none !important;
     margin-bottom: 2rem;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Subtle shadow */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 1rem; /* Ensure card itself is rounded */
+    overflow: hidden; /* Important for image zoom effect */
 }
 
-.card-img-top{
-      border-radius: 1rem !important;
-      width : 100% !important;
-      object-fit: cover !important;
+.listing-card:hover {
+    transform: translateY(-5px); /* Slight lift effect */
+    box-shadow: 0 8px 16px rgba(0,0,0,0.15); /* Increased shadow on hover */
 }
 
-.card-body{
-    padding : 0rem !important;
+.card-img-top {
+    border-radius: 1rem 1rem 0 0 !important; /* Only top corners rounded if card has its own radius */
+    width: 100% !important;
+    object-fit: cover !important;
+    height: 20rem; /* Moved from inline style in index.ejs */
+    transition: transform 0.3s ease;
+}
 
+.listing-card:hover .card-img-top {
+    transform: scale(1.05); /* Slight zoom on image hover */
+}
+
+.card-body {
+    padding: 1rem !important; /* Increased padding */
 }
 
 .card-text p{
@@ -83,16 +340,17 @@ body {
     text-decoration: none !important;
 }
 
-/* Card Effects */
-.card-img-overlay{
-    opacity : 0;
-
+/* Card Effects - Overlay (Commented out as image zoom is preferred) */
+/*
+.card-img-overlay {
+    opacity: 0;
 }
 
-.card-img-overlay:hover{
-    opacity : 0.2;
+.card-img-overlay:hover {
+    opacity: 0.2;
     background-color: white;
 }
+*/
 
 /* New-Page */
 
@@ -108,21 +366,420 @@ body {
 }
 
 /* Show Page */
-.show-img{
-    height: 30vh;
+.show-img {
+    width: 100%;
+    height: 60vh;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 1rem 1rem 0 0;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-transform: translateZ(0) scale(1.0, 1.0);
+    transform: translateZ(0);
 }
 
-.btns{
-    display : flex;
-
+.show-img:hover {
+    transform: scale(1.02) translateZ(0);
 }
 
-.show-card{
-    padding-left: 0;
-    padding-right: 0;
+.show-card {
+    border: none !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border-radius: 1rem !important;
+    overflow: hidden;
+    margin: 0 auto 2rem;
+    max-width: 900px;
+}
+
+/* Title alignment */
+.container > .row > .col-12 > h1 {
+    padding: 0 1rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Ensure content aligns with title */
+.show-card .card-body {
+    padding: 1.5rem !important;
+}
+
+.card-body {
+    padding: 2rem !important;
+}
+
+.card-text {
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+.card-text:first-of-type {
+    font-size: 1.2rem;
+    color: #666;
+}
+
+.card-text:nth-last-child(2),
+.card-text:nth-last-child(3) {
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: #333;
+}
+
+.btns {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin: 2rem 0;
+}
+
+.btns .btn {
+    min-width: 100px;
+    padding: 0.5rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btns .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Review Section */
+#reviews {
+    margin: 3rem 0;
+    padding: 2rem 0;
+    border-top: 1px solid #eee;
+}
+
+.review-card {
+    border: 1px solid #eee;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    transition: all 0.3s ease;
+    background-color: #fff;
+}
+
+.review-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+.review-card .card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.review-card .card-text {
+    color: #555;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+}
+
+.starability-result {
+    margin: 0.5rem 0 1rem;
+    font-size: 1.1rem;
+}
+
+/* Review Form */
+#review-form {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 0.75rem;
+    margin-bottom: 2rem;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+#review-form h4 {
+    margin-bottom: 1.5rem;
+    color: #333;
+    font-weight: 600;
+    font-size: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+#review-form .form-label {
+    font-weight: 500;
+    color: #444;
+    margin-bottom: 0.5rem;
+}
+
+#review-form .form-control {
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    transition: all 0.2s;
+}
+
+#review-form .form-control:focus {
+    border-color: #fe424d;
+    box-shadow: 0 0 0 0.2rem rgba(254, 66, 77, 0.15);
+}
+
+#review-form .btn {
+    padding: 0.75rem 2rem;
+    font-weight: 500;
+    border-radius: 0.5rem;
+    transition: all 0.2s;
+}
+
+#review-form .btn-dark {
+    background-color: #fe424d;
+    border: none;
+}
+
+#review-form .btn-dark:hover {
+    background-color: #e63946;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(254, 66, 77, 0.2);
+}
+
+/* Star Rating - Using default starability-slot styles from rating.css */
+
+/* Ensure star rating container doesn't wrap */
+.star-rating {
+    display: inline-block;
+    width: 100%;
+    overflow: hidden;
+}
+
+/* Review Cards */
+.review-card {
+    border: 1px solid #eee;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    transition: all 0.3s ease;
+    background-color: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.review-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+.review-card .card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+    display: flex;
+    align-items: center;
+}
+
+.review-card .card-title i {
+    font-size: 1.5rem;
+    margin-right: 0.75rem;
+    color: #6c757d;
+}
+
+.review-card .card-text {
+    color: #555;
+    font-size: 1rem;
+    margin: 0.5rem 0 1rem;
+    line-height: 1.6;
+}
+
+.review-card .text-muted {
+    font-size: 0.85rem;
+    color: #6c757d !important;
+}
+
+.review-card .btn-outline-danger {
+    font-size: 0.85rem;
+    padding: 0.25rem 0.75rem;
+}
+
+.review-card .btn-outline-danger:hover {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Star Rating in Reviews */
+.starability-result {
+    margin: 0.5rem 0;
+    font-size: 1.25rem;
+    color: #ffd700;
+    letter-spacing: 0.2em;
+}
+
+/* No Reviews Message */
+.no-reviews {
+    text-align: center;
+    padding: 3rem 0;
+    color: #6c757d;
+}
+
+.no-reviews i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: #dee2e6;
+}
+
+.no-reviews p {
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+/* Action Buttons */
+.btns .btn-dark {
+    background-color: #fe424d;
+    border: none;
+    transition: all 0.2s;
+    color: white;
+}
+
+.btns .btn-dark:hover {
+    background-color: #e63946;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(254, 66, 77, 0.2);
+    color: white;
+}
+
+.btns .btn-outline-danger {
+    border-color: #fe424d;
+    color: #fe424d;
+    transition: all 0.2s;
+    background-color: transparent;
+}
+
+.btns .btn-outline-danger:hover {
+    background-color: #212529;
+    border-color: #212529;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Map Section */
+#map-container {
+    margin: 3rem 0;
+    padding: 2rem 0;
+    border-top: 1px solid #eee;
+}
+
+#map-container h3 {
+    margin-bottom: 1.5rem;
+    color: #333;
+    font-weight: 600;
+}
+
+#map {
+    width: 100%;
+    height: 400px;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border: 1px solid #eee;
+}
+
+/* Star Rating */
+.starability-slot {
+    margin: 1rem 0;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .show-img {
+        height: 40vh;
+    }
+    
+    .btns {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .btns .btn {
+        width: 100%;
+        margin: 0.5rem 0;
+    }
+    
+    .review-card {
+        padding: 1rem;
+    }
 }
 
 /* Map */
+
+/* Filter Bar Styles (enhanced from index.ejs) */
+#filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 1rem 0;
+    /* border-bottom: 1px solid #eee; /* Optional: subtle separator */
+    margin-bottom: 1rem; /* Reduced from 2rem as .filters now has margin-top */
+}
+
+.filters { /* Individual filter items */
+    text-align: center;
+    margin-right: 1.5rem; /* Adjusted spacing */
+    margin-top: 1rem; /* Adjusted spacing */
+    opacity: 0.7;
+    padding: 0.5rem 1rem;
+    border-radius: 2rem; /* Pill shape */
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.filters:hover {
+    opacity: 1;
+    background-color: #f0f0f0; /* Light hover background */
+    color: #000;
+}
+
+.filters.active { /* Add 'active' class with JS later */
+    background-color: #fe424d; /* Your primary color */
+    color: white;
+    opacity: 1;
+}
+
+.filters.active i,
+.filters.active p {
+    color: white;
+}
+
+.filters i {
+    font-size: 1.25rem; /* Adjusted icon size */
+    margin-bottom: 0.25rem;
+    display: block; 
+}
+
+.filters p {
+    font-size: 0.75rem; /* Slightly smaller text */
+    margin-bottom: 0;
+    white-space: nowrap; /* Prevent text wrapping */
+}
+
+.tax-toggle {
+    border: 1px solid #ced4da; /* Softer border */
+    border-radius: 1rem; /* Consistent rounding */
+    height: auto; /* Auto height based on content */
+    padding: 0.65rem 1rem; /* Adjusted padding */
+    margin-left: auto; /* Pushes to the right */
+    margin-top: 1rem; /* Align with filters */
+    display: flex;
+    align-items: center;
+    background-color: #f8f9fa; /* Light background */
+}
+
+.tax-toggle .form-check-label {
+    font-size: 0.9rem;
+    margin-left: 0.5rem;
+}
+
+.tax-info {
+    display: none;
+}
+/* End of Filter Bar Styles */
 #map{
     height: 400px;   
     width: 100%;     

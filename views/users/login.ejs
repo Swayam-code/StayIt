@@ -1,30 +1,260 @@
 <% layout('/layouts/boilerplate') %>
-<div class="row mt-3">
-    <h1 class="col-6 offset-3">Login</h1>
-    <div class="col-6 offset-3">
+
+<style>
+.auth-container {
+    display: flex;
+    min-height: 80vh;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+}
+
+.auth-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    max-width: 480px;
+    padding: 2.5rem;
+    margin: 0 auto;
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.auth-header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 0.5rem;
+}
+
+.auth-header p {
+    color: #666;
+    margin-bottom: 0;
+}
+
+.form-label {
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    transition: all 0.2s;
+    background-color: #f9f9f9;
+}
+
+.form-control:focus {
+    border-color: #222;
+    box-shadow: 0 0 0 3px rgba(34, 34, 34, 0.1);
+    background-color: white;
+}
+
+.btn-login {
+    width: 100%;
+    padding: 0.875rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: white;
+    background-color: #ff385c;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 0.5rem;
+}
+
+.btn-login:hover {
+    background-color: #e61e4d;
+    transform: translateY(-1px);
+}
+
+.auth-footer a,
+.toggle-password,
+.input-group-text {
+    color: #ff385c;
+}
+
+.auth-footer a:hover {
+    color: #e61e4d;
+}
+
+.form-control:focus {
+    border-color: #ff385c;
+    box-shadow: 0 0 0 3px rgba(255, 56, 92, 0.1);
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: #666;
+}
+
+.auth-footer a {
+    color: #222;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.auth-footer a:hover {
+    color: #000;
+    text-decoration: underline;
+}
+
+.invalid-feedback {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.password-container {
+    position: relative;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0.25rem;
+}
+
+.toggle-password:hover {
+    color: #222;
+}
+
+@media (max-width: 576px) {
+    .auth-card {
+        padding: 2rem 1.5rem;
+    }
+    
+    .auth-header h1 {
+        font-size: 1.75rem;
+    }
+}
+</style>
+
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h1>Login</h1>
+            <p>Sign in to your account</p>
+        </div>
+        
         <form action="/login" method="POST" class="needs-validation" novalidate>
-            <div class="mb-3">
-            <label for="username" class="form-label">Username</label>
-            <input 
-                name="username"
-                id="username"
-                type="text" 
-                class="form-control" 
-                required
-            />
+            <% if (error && error.length) { %>
+                <div class="alert alert-danger" role="alert">
+                    <%= error %>
+                </div>
+            <% } %>
+            
+            <div class="form-group">
+                <label for="username" class="form-label">Username</label>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fas fa-user"></i>
+                    </span>
+                    <input 
+                        name="username"
+                        id="username"
+                        type="text" 
+                        class="form-control" 
+                        placeholder="Enter your username"
+                        required
+                        autofocus
+                    />
+                </div>
+                <div class="invalid-feedback">
+                    Please enter your username
+                </div>
             </div>
 
-            <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
-            <input 
-                name="password"
-                id="password"
-                type="password" 
-                class="form-control" 
-                required
-            />
+            <div class="form-group">
+                <label for="password" class="form-label">Password</label>
+                <div class="password-container">
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fas fa-lock"></i>
+                        </span>
+                        <input 
+                            name="password"
+                            id="password"
+                            type="password" 
+                            class="form-control" 
+                            placeholder="Enter your password"
+                            required
+                        />
+                        <button type="button" class="toggle-password" onclick="togglePassword()">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="invalid-feedback">
+                        Please enter your password
+                    </div>
+                </div>
+                <div class="d-flex justify-content-end mt-2">
+                    <a href="/forgot-password" class="text-decoration-none small">Forgot password?</a>
+                </div>
             </div>
-            <button class="btn btn-success">Login</button>
+            
+            <button type="submit" class="btn-login">
+                Login
+            </button>
+            <div class="auth-footer">
+                <p>Don't have an account? <a href="/register">Sign up</a></p>
+            </div>
         </form>
     </div>
-</div>    
+</div>
+
+<script>
+// Toggle password visibility
+function togglePassword() {
+    const passwordInput = document.getElementById('password');
+    const toggleIcon = document.querySelector('.toggle-password i');
+    
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleIcon.classList.remove('fa-eye');
+        toggleIcon.classList.add('fa-eye-slash');
+    } else {
+        passwordInput.type = 'password';
+        toggleIcon.classList.remove('fa-eye-slash');
+        toggleIcon.classList.add('fa-eye');
+    }
+}
+
+// Form validation
+(function () {
+    'use strict'
+    var forms = document.querySelectorAll('.needs-validation')
+    Array.prototype.slice.call(forms)
+        .forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                form.classList.add('was-validated')
+            }, false)
+        })
+})()
+</script>

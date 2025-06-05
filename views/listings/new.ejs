@@ -1,79 +1,358 @@
 <% layout('/layouts/boilerplate') %>
-    <div class="row">
-        <div class="col-8 offset-2 mt-3">
-    <h3>Create New Listing</h3>
-    <form method="POST" action="/listings" novalidate class="needs-validation" enctype = "multipart/form-data">
-        <div class="mb-3">
-            <label for="title" class="form-label">Title</label>
-            <input 
-                name="listing[title]" 
-                placeholder="Add a catchy title" 
-                type="text" 
-                class="form-control" 
-                required
-            />
-            <div class="valid-feedback">Title Looks Good!</div>
-            <div class="invalid-feedback">Title should be valid</div>
-        </div>
 
-        <div class="mb-3">
-            <label for="description" class="form-label">Description</label>
-            <textarea 
-                name="listing[description]" 
-                class="form-control"
-                required
-            ></textarea>
-            <div class="invalid-feedback">Please enter a valid description</div>
-        </div>
+<style>
+    /* Form Styling */
+    .form-container {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        padding: 2.5rem;
+        margin: 2rem 0;
+    }
+    
+    .form-title {
+        color: #222222;
+        font-weight: 700;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: #484848;
+        margin-bottom: 0.5rem;
+    }
+    
+    .form-control, .form-select {
+        padding: 0.75rem 1rem;
+        border: 1px solid #dddddd;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: #ff385c;
+        box-shadow: 0 0 0 0.25rem rgba(255, 56, 92, 0.1);
+    }
+    
+    textarea.form-control {
+        min-height: 120px;
+        resize: vertical;
+    }
+    
+    /* File Upload Styling */
+    .file-upload-container {
+        border: 2px dashed #dddddd;
+        border-radius: 8px;
+        padding: 2rem;
+        text-align: center;
+        margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .file-upload-container:hover {
+        border-color: #ff385c;
+    }
+    
+    .file-upload-icon {
+        font-size: 2.5rem;
+        color: #ff385c;
+        margin-bottom: 1rem;
+    }
+    
+    .file-upload-text {
+        font-size: 0.9rem;
+        color: #717171;
+    }
+    
+    .file-name {
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
+        color: #ff385c;
+        font-weight: 500;
+    }
+    
+    /* Submit Button */
+    .btn-submit {
+        background-color: #ff385c;
+        color: white;
+        font-weight: 600;
+        padding: 0.75rem 2rem;
+        border-radius: 8px;
+        border: none;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 0.95rem;
+    }
+    
+    .btn-submit:hover {
+        background-color: #e31c5f;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(255, 56, 92, 0.2);
+    }
+    
+    /* Form Sections */
+    .form-section {
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid #f5f5f5;
+    }
+    
+    .form-section:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+    
+    .section-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #222222;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+    }
+    
+    .section-title i {
+        margin-right: 0.75rem;
+        color: #ff385c;
+    }
+    
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+        .form-container {
+            padding: 1.5rem;
+        }
         
-        <div class="mb-3">
-            <label for="image" class="form-label">Upload Listing Image</label>
-            <input 
-                name="listing[image]" 
-                placeholder="Enter Image URL/Link" 
-                type="file" 
-                class="form-control" 
-                required
-            />
+        .form-title {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10 col-xl-8">
+            <div class="form-container">
+                <h2 class="form-title">
+                    <i class="fas fa-plus-circle me-2"></i>Create New Listing
+                </h2>
+                
+                <form method="POST" action="/listings" novalidate class="needs-validation" enctype="multipart/form-data">
+                    <!-- Basic Information Section -->
+                    <div class="form-section">
+                        <h3 class="section-title">
+                            <i class="fas fa-info-circle"></i>Basic Information
+                        </h3>
+                        
+                        <div class="mb-4">
+                            <label for="title" class="form-label">Listing Title</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-heading"></i></span>
+                                <input 
+                                    id="title"
+                                    name="listing[title]" 
+                                    placeholder="Add a catchy title" 
+                                    type="text" 
+                                    class="form-control" 
+                                    required
+                                />
+                            </div>
+                            <div class="valid-feedback">Title looks great!</div>
+                            <div class="invalid-feedback">Please provide a title for your listing</div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="description" class="form-label">Description</label>
+                            <div class="input-group">
+                                <span class="input-group-text align-items-start pt-2"><i class="fas fa-align-left"></i></span>
+                                <textarea 
+                                    id="description"
+                                    name="listing[description]" 
+                                    class="form-control"
+                                    placeholder="Tell us about your place..."
+                                    rows="4"
+                                    required
+                                ></textarea>
+                            </div>
+                            <div class="form-text">Describe the unique features of your place</div>
+                            <div class="invalid-feedback">Please provide a description</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Image Upload Section -->
+                    <div class="form-section">
+                        <h3 class="section-title">
+                            <i class="fas fa-images"></i>Photos
+                        </h3>
+                        
+                        <div class="file-upload-container" id="file-upload-container">
+                            <input 
+                                type="file" 
+                                name="listing[image]" 
+                                id="image-upload" 
+                                class="d-none" 
+                                accept="image/*"
+                                required
+                                onchange="updateFileName(this)"
+                            >
+                            <div class="file-upload-icon">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                            </div>
+                            <h5>Drag & drop photos here</h5>
+                            <p class="file-upload-text">or click to browse files</p>
+                            <div id="file-name" class="file-name"></div>
+                            <div class="invalid-feedback">Please upload at least one photo</div>
+                        </div>
+                        <div class="form-text">Upload high-quality photos to attract more guests</div>
+                    </div>
+                    
+                    <!-- Location & Pricing Section -->
+                    <div class="form-section">
+                        <h3 class="section-title">
+                            <i class="fas fa-map-marker-alt"></i>Location & Pricing
+                        </h3>
+                        
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="country" class="form-label">Country</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-globe"></i></span>
+                                    <input 
+                                        id="country"
+                                        name="listing[country]" 
+                                        placeholder="e.g., India" 
+                                        type="text" 
+                                        class="form-control"
+                                        required
+                                    />
+                                </div>
+                                <div class="invalid-feedback">Please enter a country</div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label for="location" class="form-label">Location</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-map-pin"></i></span>
+                                    <input 
+                                        id="location"
+                                        name="listing[location]" 
+                                        placeholder="e.g., Jaipur, Rajasthan" 
+                                        type="text" 
+                                        class="form-control"
+                                        required
+                                    />
+                                </div>
+                                <div class="invalid-feedback">Please enter a location</div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label for="price" class="form-label">Price per night</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">₹</span>
+                                    <input 
+                                        id="price"
+                                        name="listing[price]" 
+                                        placeholder="e.g., 2500" 
+                                        type="number" 
+                                        min="0"
+                                        step="100"
+                                        class="form-control" 
+                                        required
+                                    />
+                                </div>
+                                <div class="invalid-feedback">Please enter a valid price</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Submit Button -->
+                    <div class="d-flex justify-content-between align-items-center mt-5">
+                        <a href="/listings" class="text-decoration-none text-muted">
+                            <i class="fas fa-arrow-left me-2"></i>Back to Listings
+                        </a>
+                        <button type="submit" class="btn btn-submit">
+                            <i class="fas fa-save me-2"></i>Create Listing
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
-        
-        <div class="row">
-        <div class="mb-3 col-md-4">
-            <label for="price" class="form-label">Price</label>
-            <input 
-                name="listing[price]" 
-                placeholder="&#8377; 1000" 
-                class="form-control" 
-                required
-            />
-            <div class="invalid-feedback">Price should be valid</div>
-        </div>
-        
-        <div class="mb-3 col-md-8">
-            <label for="country" class="form-label">Country</label>
-            <input 
-                name="listing[country]" 
-                placeholder="India" 
-                type="text" 
-                class="form-control"
-                required
-            />  
-            <div class="invalid-feedback">Country name should be valid</div>  
-        </div>
-        </div>
-        
-        <div class="mb-3">
-            <label for="location" class="form-label">Location</label>
-            <input 
-                name="listing[location]" 
-                placeholder="Jaipur,Rajasthan" 
-                type="text" 
-                class="form-control"
-                required
-            />
-            <div class="invalid-feedback">Location should be valid</div>
-        </div>
-        <button class="btn btn-dark add-btn mt-3">Add</button>
-    </form>
     </div>
 </div>
+
+<script>
+    // File upload handling
+    const fileUploadContainer = document.getElementById('file-upload-container');
+    const fileInput = document.getElementById('image-upload');
+    const fileNameDisplay = document.getElementById('file-name');
+    
+    // Click on container triggers file input
+    fileUploadContainer.addEventListener('click', () => {
+        fileInput.click();
+    });
+    
+    // Handle drag and drop
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        fileUploadContainer.addEventListener(eventName, preventDefaults, false);
+    });
+    
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    
+    ['dragenter', 'dragover'].forEach(eventName => {
+        fileUploadContainer.addEventListener(eventName, highlight, false);
+    });
+    
+    ['dragleave', 'drop'].forEach(eventName => {
+        fileUploadContainer.addEventListener(eventName, unhighlight, false);
+    });
+    
+    function highlight() {
+        fileUploadContainer.classList.add('border-primary');
+    }
+    
+    function unhighlight() {
+        fileUploadContainer.classList.remove('border-primary');
+    }
+    
+    // Handle dropped files
+    fileUploadContainer.addEventListener('drop', handleDrop, false);
+    
+    function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        handleFiles(files);
+    }
+    
+    // Update file name display
+    function updateFileName(input) {
+        if (input.files && input.files.length > 0) {
+            fileNameDisplay.textContent = input.files[0].name;
+        } else {
+            fileNameDisplay.textContent = '';
+        }
+    }
+    
+    // Form validation
+    (function() {
+        'use strict';
+        var forms = document.querySelectorAll('.needs-validation');
+        
+        Array.prototype.slice.call(forms).forEach(function(form) {
+            form.addEventListener('submit', function(event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                
+                form.classList.add('was-validated');
+            }, false);
+        });
+    })();
+</script>

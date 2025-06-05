@@ -1,51 +1,274 @@
 <style>
-    .search-btn{
-        background-color: #fe424d;
+    /* Navbar Styling */
+    .navbar {
+        background-color: white !important;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        padding: 0.8rem 0;
+    }
+    
+    .navbar-brand {
+        font-weight: 700;
+        font-size: 1.8rem;
+        color: #ff385c !important;
+        margin-right: 2rem;
+    }
+    
+    .nav-link {
+        color: #222222 !important;
+        font-weight: 500;
+        padding: 0.5rem 1rem !important;
+        margin: 0 0.3rem;
+        border-radius: 22px;
+        transition: all 0.2s ease;
+    }
+    
+    .nav-link:hover {
+        background-color: #f7f7f7;
+        color: #ff385c !important;
+    }
+    
+    .nav-link.active {
+        color: #ff385c !important;
+        font-weight: 600;
+    }
+    
+    /* Search Bar */
+    .search-container {
+        position: relative;
+        width: 100%;
+        max-width: 500px;
+        margin: 0 1rem;
+    }
+    
+    .search-input {
+        width: 100%;
+        padding: 0.6rem 1rem 0.6rem 3rem !important;
+        border-radius: 30px !important;
+        border: 1px solid #dddddd;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        background-color: #f7f7f7;
+    }
+    
+    .search-input:focus {
+        background-color: white;
+        box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+        border-color: #ff385c;
+    }
+    
+    .search-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #717171;
+    }
+    
+    /* User Dropdown */
+    .user-dropdown .dropdown-toggle::after {
+        display: none;
+    }
+    
+    .user-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background-color: #ff385c;
         color: white;
-        border-radius: 25px;
-        padding : 0 1rem 0 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 0.9rem;
     }
-    .search-btn:hover{
-        background-color: #fe424d;
-        color: white;
+    
+    .dropdown-menu {
+        border: none;
+        box-shadow: 0 2px 16px rgba(0, 0, 0, 0.12);
+        border-radius: 12px;
+        padding: 0.5rem 0;
+        margin-top: 0.5rem;
     }
-    .search-btn i{
-        display: inline;
-        margin-right: 0.5rem;
+    
+    .dropdown-item {
+        padding: 0.5rem 1.5rem;
+        font-size: 0.9rem;
+        color: #222222;
     }
+    
+    .dropdown-item:hover {
+        background-color: #f7f7f7;
+        color: #ff385c;
+    }
+    
+    /* Add Listing Button */
+    .btn-add-listing {
+        background-color: #ff385c;
+        color: white !important;
+        border-radius: 22px;
+        padding: 0.5rem 1.2rem !important;
+        font-weight: 600;
+        margin: 0 0.5rem;
+        transition: all 0.2s ease;
+    }
+    
+    .btn-add-listing:hover {
+        /* background-color: #e31c5f; */
+        transform: translateY(-1px);
+    }
+    
+    /* Responsive Adjustments */
+    @media (max-width: 991.98px) {
+        .search-container {
+            margin: 0.5rem 0 1rem;
+            max-width: 100%;
+        }
 
-    .search-input{
-        border-radius: 25px;
-        padding : 0.5rem 3rem;
-        font-size: 1rem;
+        .navbar-collapse {
+            padding: 1rem;
+            background-color: white;
+            border-radius: 12px;
+            margin-top: 0.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: stretch; /* Make items full width */
+            max-height: calc(100vh - 70px); /* Adjust based on navbar height */
+            overflow-y: auto;
+        }
+        
+        .navbar-nav {
+            padding: 0.5rem 0;
+            width: 100%;
+        }
+        
+        .nav-link {
+            margin: 0.2rem 0;
+            padding: 0.7rem 1rem !important;
+            border-radius: 8px !important;
+        }
+
+        .btn-add-listing {
+            display: block;
+            text-align: center;
+            margin: 0.5rem 0 !important;
+            width: 100%;
+            order: 1; /* Ensure it comes after Explore, before user menu */
+        }
+
+        .user-dropdown {
+            margin-top: auto; /* Pushes to the bottom */
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+            width: 100%;
+            order: 2; /* Ensure it's last */
+        }
+
+        .user-dropdown .nav-link {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .user-dropdown .dropdown-toggle .user-avatar {
+            flex-shrink: 0;
+        }
+
+        .user-dropdown .dropdown-toggle span {
+            display: inline !important; /* Show username */
+            margin-left: 0.75rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .dropdown-menu {
+            border: none;
+            box-shadow: none;
+            padding: 0;
+            margin: 0.5rem 0 0 0; /* Adjusted margin */
+            background-color: #f8f9fa;
+            width: 100%;
+            position: static !important; /* Override Bootstrap's absolute positioning */
+            float: none !important;
+        }
+        
+        .dropdown-item {
+            padding: 0.75rem 1rem;
+        }
     }
 </style>
-<nav class="navbar navbar-expand-md bg-body-light border-bottom sticky-top">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="/listings"><i class="fa-regular fa-compass"></i></a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" >
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-      <div class="navbar-nav">
-        <a class="nav-link" href="/listings">Explore</a>
-      </div>
-      <!-- Search Bar -->
-      <div class="navbar-nav ms-auto">
-        <form class="d-flex" role="search">
-          <input class="form-control me-2  search-input" type="search" placeholder="Search destinations" >
-          <button class="btn search-btn" type="submit"><i class="fa-solid fa-magnifying-glass"></i>Search</button>
-        </form>
-      </div>
-      <div class="navbar-nav ms-auto">
-        <a class="nav-link" href="/listings/new">Add new Listing</a>
-        <% if(!currUser) { %>
-          <a class="nav-link" href="/signup"><b>SignUp</b></a>
-          <a class="nav-link" href="/login"><b>Log In</b></a>
-        <% } %> <% if(currUser) { %>
-          <a class="nav-link" href="/logout"><b>Log Out</b></a>
-        <% } %>
-      </div>
+
+<nav class="navbar navbar-expand-lg navbar-light sticky-top">
+    <div class="container">
+        <a class="navbar-brand" href="/listings">
+            <i class="fa-solid fa-compass me-1"></i> WanderLust
+        </a>
+        
+        <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <div class="d-lg-none w-100 mb-3">
+                <div class="search-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input class="form-control search-input" type="search" placeholder="Search destinations...">
+                </div>
+            </div>
+            <ul class="navbar-nav me-auto" style="order: 0;">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/listings">
+                        <i class="fas fa-home me-1"></i> Explore
+                    </a>
+                </li>
+            </ul>
+            
+            <!-- Search Bar - Desktop -->
+            <div class="search-container me-3 d-none d-lg-block">
+                <i class="fas fa-search search-icon"></i>
+                <input class="form-control search-input" type="search" placeholder="Search destinations...">
+            </div>
+            
+            <!-- Right Side Navigation -->
+            <ul class="navbar-nav">
+                <% if(!currUser) { %>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login">
+                            <i class="fas fa-sign-in-alt me-1"></i> Log In
+                        </a>
+                    </li>
+                    <li class="nav-item d-none d-lg-block">
+                        <a class="nav-link" href="/signup">
+                            <span class="border border-2 border-dark px-3 py-1 rounded-pill">
+                                Sign Up
+                            </span>
+                        </a>
+                    </li>
+                <% } else { %>
+                    <li class="nav-item">
+                        <a class="nav-link btn-add-listing" href="/listings/new">
+                            <i class="fas fa-plus me-1"></i> Add Listing
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown user-dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="user-avatar me-1">
+                                <%= currUser.username ? currUser.username.charAt(0).toUpperCase() : 'U' %>
+                            </div>
+                            <span class="d-none d-lg-inline"><%= currUser.username %></span> <!-- Desktop: username will be shown by default. Mobile handled by CSS to show span -->
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="/profile"><i class="fas fa-user me-2"></i>Profile</a></li>
+                            <li><a class="dropdown-item" href="/my-listings"><i class="fas fa-list me-2"></i>My Listings</a></li>
+                            <li><a class="dropdown-item" href="/wishlist"><i class="fas fa-heart me-2"></i>Wishlist</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="/logout"><i class="fas fa-sign-out-alt me-2"></i>Log Out</a></li>
+                        </ul>
+                    </li>
+                <% } %>
+            </ul>
+        </div>
     </div>
-  </div>
 </nav>

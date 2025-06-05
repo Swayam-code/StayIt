@@ -1,54 +1,225 @@
 <% layout('/layouts/boilerplate') %>
-<div class="row mt-3">
-    <div class="col-8 offset-2">
 
-    <h3>Edit your Listing</h3>
-    <form method="POST" action="/listings/<%= listing._id %>?_method=PUT" novalidate class="needs-validation" enctype="multipart/form-data">
-        <div class="mb-3">  
-            <label for="title" class="form-label">Title</label>
-            <input name="listing[title]" value="<%= listing.title %>" type="text" class="form-control" required/>
-            <div class="valid-feedback">Title Looks Good!</div>
-            <div class="invalid-feedback">Title should be valid</div>
-        </div>
-        
-        <div class="mb-3">
-            <label for="description" class="form-label">Description</label>
-            <textarea name="listing[description]" type="text" class="form-control" required><%= listing.description %></textarea>
-            <div class="invalid-feedback">Please enter a valid description</div>
-        </div>
+<style>
+.edit-listing {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 1.5rem;
+}
 
-        <div class="mb-3">
-            Original Listing Image <br>
-            <img src="<%= originalImageUrl %>">
-        </div>
-        
-        <div class="mb-3">
-            <label for="image" class="form-label">Upload New Image</label>
-            <input name="listing[image]" type="file" class="form-control"/>
-        </div>    
-        
-        <div class="row">
-        <div class="mb-3 col-md-4">
-            <label for="price" class="form-label">Price</label>
-            <input name="listing[price]" value="<%= listing.price %>" type="number" type="text" class="form-control" required/>
-            <div class="invalid-feedback">Price should be valid</div>
-        </div>    
-        
-        <div class="mb-3 col-md-8">
-            <label for="country" class="form-label">Country</label>
-            <input name="listing[country]" value="<%= listing.country %>" type="text" class="form-control" required/>
-            <div class="invalid-feedback">Country name should be valid</div>  
-        </div>
-        </div>
-        
-        <div class="mb-3">
-            <label for="location" class="form-label">Location</label>
-            <input name="listing[location]" value="<%= listing.location %>" type="text" class="form-control" required/>
-            <div class="invalid-feedback">Location should be valid</div>
-        </div>
+.edit-listing h2 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: #222;
+}
 
-        <button class="btn btn-dark edit-btn mt-3">Edit</button>
-    </form>
+.form-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.form-label {
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.form-control, .form-select {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    transition: all 0.2s;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #222;
+    box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.08);
+}
+
+.image-preview {
+    width: 100%;
+    height: 200px;
+    border-radius: 8px;
+    object-fit: cover;
+    margin-bottom: 1rem;
+    border: 1px dashed #ddd;
+}
+
+.btn-primary {
+    background-color: #ff385c;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: all 0.2s;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #e61e4d;
+    transform: translateY(-1px);
+}
+
+.btn-outline-secondary {
+    color: #ff385c;
+    border-color: #ff385c;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #ff385c;
+    color: white;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #ff385c;
+    box-shadow: 0 0 0 0.2rem rgba(255, 56, 92, 0.1);
+}
+
+.image-upload-wrapper:hover {
+    border-color: #ff385c;
+    background: #fff5f7;
+}
+
+.invalid-feedback {
+    font-size: 0.85rem;
+}
+
+.image-upload-wrapper {
+    margin: 1.5rem 0;
+    padding: 1.5rem;
+    border: 2px dashed #e0e0e0;
+    border-radius: 8px;
+    text-align: center;
+    background: #fafafa;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.image-upload-wrapper:hover {
+    border-color: #999;
+    background: #f5f5f5;
+}
+
+.image-upload-text {
+    margin-top: 0.5rem;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+    .edit-listing {
+        padding: 0 1rem;
+    }
+    
+    .form-card {
+        padding: 1.5rem 1rem;
+    }
+}
+</style>
+
+<div class="edit-listing">
+    <div class="form-card">
+        <h2>Edit your listing</h2>
+        <form method="POST" action="/listings/<%= listing._id %>?_method=PUT" novalidate class="needs-validation" enctype="multipart/form-data">
+            <div class="mb-4">
+                <label for="title" class="form-label">Title</label>
+                <input name="listing[title]" value="<%= listing.title %>" type="text" class="form-control" placeholder="Enter listing title" required/>
+                <div class="valid-feedback">Title looks good!</div>
+                <div class="invalid-feedback">Please enter a valid title</div>
+            </div>
+            
+            <div class="mb-4">
+                <label for="description" class="form-label">Description</label>
+                <textarea name="listing[description]" class="form-control" rows="4" placeholder="Tell us about your place" required><%= listing.description %></textarea>
+                <div class="invalid-feedback">Please enter a description</div>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label">Current Image</label>
+                <img src="<%= originalImageUrl %>" class="img-fluid rounded mb-3 d-block" style="max-height: 200px;">
+                
+                <div class="image-upload-wrapper" onclick="document.getElementById('image-upload').click()">
+                    <i class="fas fa-cloud-upload-alt fa-2x" style="color: #666;"></i>
+                    <div class="image-upload-text">Click to upload new image or drag and drop</div>
+                    <input type="file" id="image-upload" name="listing[image]" class="d-none" accept="image/*">
+                </div>
+                <div class="form-text">Upload a high-quality photo of your place (JPEG, PNG, max 5MB)</div>
+            </div>
+            
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <label for="price" class="form-label">Price per night (₹)</label>
+                    <div class="input-group">
+                        <span class="input-group-text">₹</span>
+                        <input name="listing[price]" value="<%= listing.price %>" type="number" min="0" step="1" class="form-control" placeholder="0" required/>
+                    </div>
+                    <div class="invalid-feedback">Please enter a valid price</div>
+                </div>
+                
+                <div class="col-md-6">
+                    <label for="country" class="form-label">Country</label>
+                    <input name="listing[country]" value="<%= listing.country %>" type="text" class="form-control" placeholder="Enter country" required/>
+                    <div class="invalid-feedback">Please enter a valid country</div>
+                </div>
+                
+                <div class="col-12">
+                    <label for="location" class="form-label">Full Address</label>
+                    <input name="listing[location]" value="<%= listing.location %>" type="text" class="form-control" placeholder="Street address, city, state, ZIP code" required/>
+                    <div class="invalid-feedback">Please enter a valid address</div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+                <a href="/listings/<%= listing._id %>" class="btn btn-outline-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary px-4">
+                    <i class="fas fa-save me-2"></i>Save Changes
+                </button>
+            </div>
+        </form>
     </div>
-</div>  
- 
+</div>
+
+<script>
+// Image upload preview
+const imageUpload = document.getElementById('image-upload');
+const imagePreview = document.querySelector('.image-preview');
+
+if (imageUpload) {
+    imageUpload.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const img = document.createElement('img');
+                img.src = event.target.result;
+                img.className = 'image-preview';
+                const uploadWrapper = document.querySelector('.image-upload-wrapper');
+                uploadWrapper.innerHTML = '';
+                uploadWrapper.appendChild(img);
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+}
+
+// Form validation
+(function () {
+    'use strict'
+    var forms = document.querySelectorAll('.needs-validation')
+    Array.prototype.slice.call(forms)
+        .forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                form.classList.add('was-validated')
+            }, false)
+        })
+})()
+</script>
