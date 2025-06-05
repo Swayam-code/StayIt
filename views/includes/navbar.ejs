@@ -267,16 +267,24 @@
             <!-- Right Side Navigation -->
             <ul class="navbar-nav">
                 <% if(!currUser) { %>
+                    <!-- Login Link - Visible on all screens -->
                     <li class="nav-item">
                         <a class="nav-link" href="/login">
                             <i class="fas fa-sign-in-alt me-1"></i> Log In
                         </a>
                     </li>
+                    <!-- Sign Up Link - Different styles for mobile and desktop -->
                     <li class="nav-item d-none d-lg-block">
                         <a class="nav-link" href="/signup">
                             <span class="border border-2 border-dark px-3 py-1 rounded-pill">
                                 Sign Up
                             </span>
+                        </a>
+                    </li>
+                    <!-- Mobile-only Sign Up Link -->
+                    <li class="nav-item d-lg-none">
+                        <a class="nav-link" href="/signup">
+                            <i class="fas fa-user-plus me-1"></i> Sign Up
                         </a>
                     </li>
                 <% } else { %>
