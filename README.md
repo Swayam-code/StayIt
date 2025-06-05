@@ -1,4 +1,5 @@
 # WanderLust - Vacation Rental Platform
+![image](https://github.com/user-attachments/assets/b4e22c16-70a9-469f-a96f-76765aa956f6)
 
 WanderLust is a full-stack vacation rental web application built with Node.js, Express, MongoDB, and EJS. It allows users to browse, search, and book unique accommodations around the world.
 
@@ -205,4 +206,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-Made with ❤️ by [Swayam]
+Made with ❤️ by Swayam
