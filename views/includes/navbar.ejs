@@ -118,6 +118,39 @@
     }
     
     /* Responsive Adjustments */
+    /* Adjustments for medium-large screens (992px - 1400px) */
+    @media (min-width: 992px) and (max-width: 1400px) {
+        .search-container {
+            max-width: 300px;
+            margin: 0 0.5rem;
+            flex-shrink: 1;
+        }
+        
+        .navbar-brand {
+            margin-right: 1rem;
+            font-size: 1.6rem;
+        }
+        
+        .nav-link {
+            padding: 0.4rem 0.5rem !important;
+            margin: 0 0.1rem;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+        
+        .btn-add-listing {
+            padding: 0.4rem 0.8rem !important;
+            font-size: 0.9rem;
+        }
+        
+        .user-avatar {
+            width: 28px;
+            height: 28px;
+            font-size: 0.8rem;
+        }
+    }
+    
+    /* Mobile menu styles */
     @media (max-width: 991.98px) {
         .search-container {
             margin: 0.5rem 0 1rem;

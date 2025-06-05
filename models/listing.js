@@ -13,9 +13,23 @@ const listingSchema = new Schema({
     url : String,
     filename : String,
   },
-  price: Number,
-  location: String,
-  country: String,
+  price: {
+    type: Number,
+    required: [true, 'Price per night is required'],
+    min: [0, 'Price cannot be negative']
+  },
+  location: {
+    type: String,
+    required: [true, 'Location is required'],
+    trim: true,
+    minlength: [2, 'Location must be at least 2 characters long']
+  },
+  country: {
+    type: String,
+    required: [true, 'Country is required'],
+    trim: true,
+    minlength: [2, 'Country name must be at least 2 characters long']
+  },
   reviews: [
     {
       type: Schema.Types.ObjectId,

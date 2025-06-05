@@ -15,9 +15,55 @@ module.exports.createReview = async (req, res) => {
 }
 
 module.exports.destroyReview = async (req, res) => {
-  let {id, reviewId} = req.params;
-  await Listing.findByIdAndUpdate(id, {$pull: {reviews: reviewId}});
-  await Review.findByIdAndDelete(reviewId);
-  req.flash('success', 'Review deleted successfully!');
-  res.redirect(`/listings/${id}`);
+  try {
+    let {id, reviewId} = req.params;
+    
+    // Check if the review exists and belongs to the listing
+    const review = await Review.findById(reviewId);
+    if (!review) {
+      if (req.xhr || req.headers.accept.indexOf('json') > -1) {
+        return res.status(404).json({ success: false, message: 'Review not found' });
+      }
+      req.flash('error', 'Review not found');
+      return res.redirect(`/listings/${id}`);
+    }
+    
+    // Check if the user is authorized to delete the review
+    if (!review.author.equals(req.user._id) && !req.user.isAdmin) {
+      if (req.xhr || req.headers.accept.indexOf('json') > -1) {
+        return res.status(403).json({ success: false, message: 'Not authorized to delete this review' });
+      }
+      req.flash('error', 'Not authorized to delete this review');
+      return res.redirect(`/listings/${id}`);
+    }
+    
+    // Delete the review
+    await Listing.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
+    await Review.findByIdAndDelete(reviewId);
+    
+    if (req.xhr || req.headers.accept.indexOf('json') > -1) {
+      return res.json({ 
+        success: true, 
+        message: 'Review deleted successfully!',
+        reviewId: reviewId
+      });
+    }
+    
+    req.flash('success', 'Review deleted successfully!');
+    res.redirect(`/listings/${id}`);
+    
+  } catch (error) {
+    console.error('Error deleting review:', error);
+    
+    if (req.xhr || req.headers.accept.indexOf('json') > -1) {
+      return res.status(500).json({ 
+        success: false, 
+        message: 'An error occurred while deleting the review',
+        error: error.message 
+      });
+    }
+    
+    req.flash('error', 'An error occurred while deleting the review');
+    res.redirect(`/listings/${id}`);
+  }
 }

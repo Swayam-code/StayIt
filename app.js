@@ -84,11 +84,42 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser()); 
 passport.deserializeUser(User.deserializeUser());
 
+// Flash messages middleware
 app.use((req, res, next) => {
-  res.locals.success = req.flash('success');
-  res.locals.error = req.flash('error');
-  res.locals.currUser = req.user; // Make currentUser available in all templates
+  // Only clear flash messages if this is not an AJAX request
+  if (!req.xhr) {
+    res.locals.success = req.flash('success');
+    res.locals.error = req.flash('error');
+  } else {
+    // For AJAX requests, keep the flash messages in the session
+    res.locals.success = [];
+    res.locals.error = [];
+  }
+  
+  // Make currentUser available in all templates
+  res.locals.currUser = req.user;
+  
+  // Ensure flash messages are preserved for the next request if needed
+  res.locals._flash = req.session.flash || {};
+  req.session.flash = {};
+  
+  // Add method to set flash messages that will be available on the next request
+  res.setFlash = function(type, message) {
+    if (!req.session.flash) {
+      req.session.flash = {};
+    }
+    if (!req.session.flash[type]) {
+      req.session.flash[type] = [];
+    }
+    req.session.flash[type].push(message);
+  };
+  
   next();
+});
+
+// Root route redirect to /listings
+app.get('/', (req, res) => {
+  res.redirect('/listings');
 });
 
 // app.get('/demouser', async (req, res) => {

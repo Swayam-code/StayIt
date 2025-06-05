@@ -31,64 +31,96 @@ module.exports.showListing = async (req, res) => {
 }
 
 module.exports.createListing = async (req, res, next) => {
-    const newListing = new Listing(req.body.listing);
-    newListing.owner = req.user._id;
+    try {
+        const { title, description, price, location, country } = req.body.listing;
+        
+        // Basic validation
+        if (!title || !description || price === undefined || !location || !country) {
+            req.flash('error', 'All fields are required');
+            return res.redirect('/listings/new');
+        }
+        
+        // Price validation - must be a positive number
+        const priceValue = parseFloat(price);
+        if (isNaN(priceValue)) {
+            req.flash('error', 'Price must be a valid number');
+            return res.redirect('/listings/new');
+        }
+        
+        if (priceValue < 0) {
+            req.flash('error', 'Price cannot be negative');
+            return res.redirect('/listings/new');
+        }
 
-    // Geocode the location
-    const locationString = req.body.listing.location;
-    if (locationString) {
+        const newListing = new Listing(req.body.listing);
+        newListing.owner = req.user._id;
+
+        // Simple location validation
+        if (location.trim().length < 2) {
+            req.flash('error', 'Location must be at least 2 characters long');
+            return res.redirect('/listings/new');
+        }
+
+        // Set location and try to geocode
+        newListing.location = location.trim();
+        
+        // Try to geocode the location (but don't fail if it doesn't work)
         try {
-            console.log('Server-side Geocoding for:', locationString);
+            const locationString = `${location}, ${country}`;
+            console.log('Geocoding location:', locationString);
             const geoData = await geocoder.geocode(locationString);
+            
             if (geoData && geoData.length > 0) {
-                console.log('Coordinates:', { latitude: geoData[0].latitude, longitude: geoData[0].longitude });
+                const firstResult = geoData[0];
+                console.log('Geocoding successful:', { 
+                    formatted: firstResult.formattedAddress,
+                    coordinates: [firstResult.longitude, firstResult.latitude]
+                });
+                
                 newListing.geometry = {
                     type: 'Point',
-                    coordinates: [geoData[0].longitude, geoData[0].latitude] // GeoJSON order: [longitude, latitude]
+                    coordinates: [firstResult.longitude, firstResult.latitude]
                 };
-            } else {
-                // If geocoder returns no data, treat as an error for creating the listing if geometry is essential
-                req.flash('error', 'Location could not be geocoded. Please provide a valid location.');
-                return res.redirect('/listings/new'); // Redirect back to form
+                
+                // Use the formatted address if available
+                if (firstResult.formattedAddress) {
+                    newListing.location = firstResult.formattedAddress;
+                }
             }
         } catch (err) {
-            console.error('Geocoding error:', err.message);
-            req.flash('error', `Geocoding failed: ${err.message}. Please try a different location or check the address.`);
-            return res.redirect('/listings/new'); // Redirect back to form
+            console.warn('Geocoding not available or failed:', err.message);
+            // Continue without geocoding - not a critical error
         }
-    } else {
-        // If locationString is essential for your listings (e.g., if geometry is always required by your model)
-        req.flash('error', 'Location is required.');
-        return res.redirect('/listings/new');
-    }
 
-    // Handle file upload
-    if (req.file) {
-        let url = req.file.path;
-        let filename = req.file.filename;
-        newListing.image = { url, filename };
-    } else {
-        // If an image is mandatory for new listings
-        req.flash('error', 'Listing image is required.');
-        return res.redirect('/listings/new');
-    }
+        // Handle file upload
+        if (req.file) {
+            let url = req.file.path;
+            let filename = req.file.filename;
+            newListing.image = { url, filename };
+        } else {
+            req.flash('error', 'Listing image is required.');
+            return res.redirect('/listings/new');
+        }
 
-    // Attempt to save the listing
-    try {
-        console.log("Attempting to save new listing:", JSON.stringify(newListing, null, 2));
+        // Save the listing
         await newListing.save();
         req.flash('success', 'New listing created successfully!');
-        res.redirect('/listings');
-    } catch (saveError) {
-        console.error('Error saving listing to database:', saveError);
-        // Handle Mongoose validation errors more gracefully
-        let errorMessages = saveError.message;
-        if (saveError.name === 'ValidationError') {
-            errorMessages = Object.values(saveError.errors).map(e => e.message).join(', ');
+        res.redirect(`/listings/${newListing._id}`);
+        
+    } catch (error) {
+        console.error('Error creating listing:', error);
+        
+        // Handle validation errors
+        if (error.name === 'ValidationError') {
+            const messages = Object.values(error.errors).map(err => err.message).join(', ');
+            req.flash('error', `Validation error: ${messages}`);
+        } else if (error.code === 11000) {
+            req.flash('error', 'A listing with this title already exists. Please choose a different title.');
+        } else {
+            req.flash('error', 'An error occurred while creating the listing. Please try again.');
         }
-        req.flash('error', `Failed to save listing: ${errorMessages}`);
-        // Consider re-rendering the form with `req.body.listing` to preserve user input
-        // For now, just redirecting back to the new form.
+        
+        // Redirect back to the form with the error message
         res.redirect('/listings/new');
     }
 };
@@ -107,24 +139,152 @@ module.exports.renderEditForm = async (req, res) => {
 }
 
 module.exports.updateListing = async (req, res) => {
-  let {id} = req.params;
-  let listing = await Listing.findByIdAndUpdate(id, {...req.body.listing});
+  try {
+    const {id} = req.params;
+    const { title, description, price, location, country } = req.body.listing;
+    
+    // Basic validation
+    if (!title || !description || price === undefined || !location || !country) {
+      req.flash('error', 'All fields are required');
+      return res.redirect(`/listings/${id}/edit`);
+    }
+    
+    // Price validation - must be a positive number
+    const priceValue = parseFloat(price);
+    if (isNaN(priceValue)) {
+        req.flash('error', 'Price must be a valid number');
+        return res.redirect(`/listings/${id}/edit`);
+    }
+    
+    if (priceValue < 0) {
+        req.flash('error', 'Price cannot be negative');
+        return res.redirect(`/listings/${id}/edit`);
+    }
+    
+    // Simple location validation
+    if (location.trim().length < 2) {
+        req.flash('error', 'Location must be at least 2 characters long');
+        return res.redirect(`/listings/${id}/edit`);
+    }
 
-  if(typeof req.file !== 'undefined'){
-    let url = req.file.path;
-    let filename = req.file.filename;
-    listing.image = {url, filename};
-    await listing.save();
+    // Prepare update data
+    let updatedData = { ...req.body.listing };
+    updatedData.location = location.trim();
+    
+    // Try to geocode the location (but don't fail if it doesn't work)
+    try {
+        const locationString = `${location}, ${country}`;
+        console.log('Geocoding location:', locationString);
+        const geoData = await geocoder.geocode(locationString);
+        
+        if (geoData && geoData.length > 0) {
+            const firstResult = geoData[0];
+            console.log('Geocoding successful:', { 
+                formatted: firstResult.formattedAddress,
+                coordinates: [firstResult.longitude, firstResult.latitude]
+            });
+            
+            updatedData.geometry = {
+                type: 'Point',
+                coordinates: [firstResult.longitude, firstResult.latitude]
+            };
+            
+            // Use the formatted address if available
+            if (firstResult.formattedAddress) {
+                updatedData.location = firstResult.formattedAddress;
+            }
+        }
+    } catch (err) {
+        console.warn('Geocoding not available or failed:', err.message);
+        // Continue without geocoding - not a critical error
+    }
+    
+    // Find and update the listing
+    const listing = await Listing.findByIdAndUpdate(id, updatedData, { new: true, runValidators: true });
+    
+    if (!listing) {
+      req.flash('error', 'Listing not found');
+      return res.redirect('/listings');
+    }
+    
+    // Handle file upload if a new image was provided
+    if (req.file) {
+      let url = req.file.path;
+      let filename = req.file.filename;
+      listing.image = { url, filename };
+      await listing.save();
+    }
+    
+    req.flash('success', 'Listing updated successfully!');
+    res.redirect(`/listings/${id}`);
+    
+  } catch (error) {
+    console.error('Error updating listing:', error);
+    
+    // Handle validation errors
+    if (error.name === 'ValidationError') {
+      const messages = Object.values(error.errors).map(err => err.message).join(', ');
+      req.flash('error', `Validation error: ${messages}`);
+    } else if (error.code === 11000) {
+      req.flash('error', 'A listing with this title already exists. Please choose a different title.');
+    } else {
+      req.flash('error', 'An error occurred while updating the listing. Please try again.');
+    }
+    
+    // Redirect back to the edit form with the error message
+    res.redirect(`/listings/${req.params.id}/edit`);
   }
-
-  req.flash('success', 'Listing updated successfully!');
-  res.redirect(`/listings/${id}`);
 }
 
 module.exports.destroyListing = async (req, res) => {
-  let {id} = req.params;
-  let deletedListing = await Listing.findByIdAndDelete(id);
-  // console.log(deletedListing);
-  req.flash('success', 'Listing deleted successfully!');
-  res.redirect('/listings');
+  try {
+    let {id} = req.params;
+    
+    // Check if the listing exists
+    const listing = await Listing.findById(id);
+    if (!listing) {
+      if (req.xhr || req.headers.accept.indexOf('json') > -1) {
+        return res.status(404).json({ success: false, message: 'Listing not found' });
+      }
+      req.flash('error', 'Listing not found');
+      return res.redirect('/listings');
+    }
+    
+    // Check if the user is authorized to delete the listing
+    if (!listing.owner.equals(req.user._id) && !req.user.isAdmin) {
+      if (req.xhr || req.headers.accept.indexOf('json') > -1) {
+        return res.status(403).json({ success: false, message: 'Not authorized to delete this listing' });
+      }
+      req.flash('error', 'Not authorized to delete this listing');
+      return res.redirect(`/listings/${id}`);
+    }
+    
+    // Delete the listing
+    await Listing.findByIdAndDelete(id);
+    
+    if (req.xhr || req.headers.accept.indexOf('json') > -1) {
+      return res.json({ 
+        success: true, 
+        message: 'Listing deleted successfully!',
+        listingId: id
+      });
+    }
+    
+    req.flash('success', 'Listing deleted successfully!');
+    res.redirect('/listings');
+    
+  } catch (error) {
+    console.error('Error deleting listing:', error);
+    
+    if (req.xhr || req.headers.accept.indexOf('json') > -1) {
+      return res.status(500).json({ 
+        success: false, 
+        message: 'An error occurred while deleting the listing',
+        error: error.message 
+      });
+    }
+    
+    req.flash('error', 'An error occurred while deleting the listing');
+    res.redirect(`/listings/${id}`);
+  }
 }
